@@ -12,7 +12,7 @@ response3 = requests.get('http://127.0.0.1:8000/summarystats').content
 response4 = requests.get('http://127.0.0.1:8000/diagnostics').content
 
 #combine all API responses
-responses = response1 + '\n' + response2 + '\n' + response3 + '\n' + response4 + '\n'
+responses = str(response1) + '\n' + str(response2) + '\n' + str(response3) + '\n' + str(response4) + '\n'
 
 #write the responses to your workspace
 with open('config.json','r') as f:

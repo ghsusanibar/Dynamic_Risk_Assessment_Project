@@ -13,11 +13,11 @@ prod_deployment_path = os.path.join(config['prod_deployment_path'])   #productio
 test_data_path = os.path.join(config['test_data_path'])               #testdata
 dataset_csv_path = os.path.join(config['output_folder_path'])         #ingesteddata
 ##################Function to get model predictions
-def model_predictions():
+def model_predictions(df):
     #read the deployed model and a test dataset, calculate predictions
-    testdata=pd.read_csv(os.getcwd() + '/' + test_data_path + '/' + 'testdata.csv')
-    X=testdata.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']].values.reshape(-1, 3)
-    y=testdata['exited'].values.reshape(-1, 1).ravel()
+#     testdata=pd.read_csv(os.getcwd() + '/' + test_data_path + '/' + 'testdata.csv')
+    X=df.loc[:,['lastmonth_activity','lastyear_activity','number_of_employees']].values.reshape(-1, 3)
+    y=df['exited'].values.reshape(-1, 1).ravel()
     with open(os.getcwd() + '/' + prod_deployment_path + '/' + 'trainedmodel.pkl', 'rb') as file:
         model = pickle.load(file)
     predicted=model.predict(X)
@@ -60,7 +60,8 @@ def outdated_packages_list():
 
 
 if __name__ == '__main__':
-    print(model_predictions())
+    testdata=pd.read_csv(os.getcwd() + '/' + test_data_path + '/' + 'testdata.csv')
+    print(model_predictions(testdata))
     print(dataframe_summary())
     print(dataframe_missing())
     print(execution_time())
