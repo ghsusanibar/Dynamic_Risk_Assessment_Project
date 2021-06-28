@@ -3,12 +3,14 @@ import numpy as np
 import os
 import json
 from datetime import datetime
+from pathlib import Path
+import ast
 #############Load config.json and get input and output paths
 with open('config.json','r') as f:
     config = json.load(f) 
 
-input_folder_path = config['input_folder_path']
-output_folder_path = config['output_folder_path']
+input_folder_path = config['input_folder_path']     #practicedata
+output_folder_path = config['output_folder_path']   #ingesteddata
 #############Function for data ingestion
 def merge_multiple_dataframe():
     #check for datasets, compile them together, and write to an output file
@@ -23,8 +25,17 @@ def merge_multiple_dataframe():
     if not os.path.exists(os.getcwd() + '/' + output_folder_path):
         os.makedirs(os.getcwd() + '/' + output_folder_path)
     df_combine.to_csv(os.getcwd() + '/' + output_folder_path + '/finaldata.csv', index=False)
-    with open(os.getcwd() + '/' + output_folder_path + '/ingestedfiles.txt', 'w') as f:
-        f.write(str(list_files))
+    
+    tmp_file = Path(os.getcwd() + '/' + output_folder_path + '/ingestedfiles.txt')
+    if tmp_file.is_file():
+        with open(os.getcwd() + '/' + output_folder_path + '/ingestedfiles.txt', 'r') as f:
+            datalist = ast.literal_eval(f.read())
+        datalist.extend(list_files)
+        with open(os.getcwd() + '/' + output_folder_path + '/ingestedfiles.txt', 'w') as f:
+            f.write(str(datalist))        
+    else:    
+        with open(os.getcwd() + '/' + output_folder_path + '/ingestedfiles.txt', 'w') as f:
+            f.write(str(list_files))
 
 if __name__ == '__main__':
     merge_multiple_dataframe()
